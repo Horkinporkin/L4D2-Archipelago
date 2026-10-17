@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+    "$basetexture"  "models/archipelago/ap_white"
+	"$color2"		"{117 194 117}"
+    "$model"        1
+    "$nocull"       1
+	"$selfillum" 	1
+}

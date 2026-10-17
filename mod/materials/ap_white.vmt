@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+    "$basetexture"  "models/archipelago/ap_white"
+    "$color"        "{255 255 255}"
+    "$model"        1
+    "$nocull"       1
+	"$selfillum" 	1
+}

@@ -5,15 +5,12 @@
 
 // Handles bridge messages to various modules
 
-#define PROGRESSIVE_WEAPON_TIER_ITEM  "Progressive Weapon Tier"
-#define PROGRESSIVE_SURVIVOR_ITEM     "Progressive Survivor"
 #define AP_HASH_SEED                  -2128831035   // 32-bit FNV-1a offset
 
 char g_messagePayload[AP_RECV_BUFFER_SIZE];
 
 StringMap g_processedItems;            // receipt keys handled during this AP session
 StringMap g_deliveredItemReceipts;     // completed one-time item rewards
-StringMap g_startingItemOccurrences;   // starting item name -> copies received during this sync
 KeyValues g_itemReceiptStore;
 char g_itemReceiptFile[PLATFORM_MAX_PATH];
 bool g_hasItemRouteFingerprint;
@@ -24,7 +21,6 @@ void Protocol_Init()
 {
     g_processedItems = new StringMap();
     g_deliveredItemReceipts = new StringMap();
-    g_startingItemOccurrences = new StringMap();
 }
 
 void Protocol_HandleMessage(const char[] line)
@@ -137,7 +133,7 @@ void Protocol_HandleUnlockChapter(const char[] payload)
     char chapter[AP_NAME_LEN];
     char itemKey[AP_ITEM_KEY_LEN];
     if (JSON_GetField(payload, "chapter", chapter, sizeof(chapter))
-        && Protocol_ClaimItem(payload, chapter, false, itemKey, sizeof(itemKey)))
+        && Protocol_ClaimItem(payload, false, itemKey, sizeof(itemKey)))
     {
         Route_UnlockChapter(chapter);
     }
@@ -148,7 +144,7 @@ void Protocol_HandleUnlockSurvivalLevel(const char[] payload)
     char map[AP_MAP_LEN];
     char itemKey[AP_ITEM_KEY_LEN];
     if (JSON_GetField(payload, "map", map, sizeof(map))
-        && Protocol_ClaimItem(payload, map, false, itemKey, sizeof(itemKey)))
+        && Protocol_ClaimItem(payload, false, itemKey, sizeof(itemKey)))
     {
         Survival_Unlock(map);
     }
@@ -159,7 +155,7 @@ void Protocol_HandleGiveItem(const char[] payload)
     char item[AP_NAME_LEN];
     char itemKey[AP_ITEM_KEY_LEN];
     if (JSON_GetField(payload, "item", item, sizeof(item))
-        && Protocol_ClaimItem(payload, item, true, itemKey, sizeof(itemKey)))
+        && Protocol_ClaimItem(payload, true, itemKey, sizeof(itemKey)))
     {
         Items_GiveItem(item, itemKey);
     }
@@ -170,7 +166,7 @@ void Protocol_HandleActivateTrap(const char[] payload)
     char trap[AP_NAME_LEN];
     char itemKey[AP_ITEM_KEY_LEN];
     if (JSON_GetField(payload, "trap", trap, sizeof(trap))
-        && Protocol_ClaimItem(payload, trap, true, itemKey, sizeof(itemKey)))
+        && Protocol_ClaimItem(payload, true, itemKey, sizeof(itemKey)))
     {
         Traps_Activate(trap, itemKey);
     }
@@ -179,7 +175,7 @@ void Protocol_HandleActivateTrap(const char[] payload)
 void Protocol_HandleUnlockWeaponTier(const char[] payload)
 {
     char itemKey[AP_ITEM_KEY_LEN];
-    if (Protocol_ClaimItem(payload, PROGRESSIVE_WEAPON_TIER_ITEM, false, itemKey, sizeof(itemKey)))
+    if (Protocol_ClaimItem(payload, false, itemKey, sizeof(itemKey)))
     {
         WeaponTiers_HandleUnlock();
     }
@@ -188,7 +184,7 @@ void Protocol_HandleUnlockWeaponTier(const char[] payload)
 void Protocol_HandleUnlockSurvivor(const char[] payload)
 {
     char itemKey[AP_ITEM_KEY_LEN];
-    if (Protocol_ClaimItem(payload, PROGRESSIVE_SURVIVOR_ITEM, false, itemKey, sizeof(itemKey)))
+    if (Protocol_ClaimItem(payload, false, itemKey, sizeof(itemKey)))
     {
         Survivors_Unlock();
     }
@@ -255,15 +251,14 @@ bool Protocol_CheckVersion(const char[] line)
     return true;
 }
 
-bool Protocol_ClaimItem(const char[] payload, const char[] itemName, bool persistAcrossReload,
-    char[] itemKey, int maxlen)
+bool Protocol_ClaimItem(const char[] payload, bool persistAcrossReload,char[] itemKey, int maxlen)
 {
     char itemIndexText[16];
     return JSON_GetField(payload, "item_index", itemIndexText, sizeof(itemIndexText))
-        && Protocol_MarkItemProcessed(itemIndexText, itemName, persistAcrossReload, itemKey, maxlen);
+        && Protocol_MarkItemProcessed(itemIndexText, persistAcrossReload, itemKey, maxlen);
 }
 
-bool Protocol_MarkItemProcessed(const char[] itemIndexText, const char[] itemName,
+bool Protocol_MarkItemProcessed(const char[] itemIndexText,
     bool persistAcrossReload, char[] processedKey, int maxlen)
 {
     if (itemIndexText[0] == '\0')
@@ -272,23 +267,7 @@ bool Protocol_MarkItemProcessed(const char[] itemIndexText, const char[] itemNam
         return false;
     }
 
-    if (StrEqual(itemIndexText, "-1"))
-    {
-        if (itemName[0] == '\0')
-        {
-            Bridge_Send("ERROR", "{\"message\":\"Starting item is missing its name.\"}");
-            return false;
-        }
-        int occurrence = 0;
-        g_startingItemOccurrences.GetValue(itemName, occurrence);
-        occurrence++;
-        g_startingItemOccurrences.SetValue(itemName, occurrence);
-        Format(processedKey, maxlen, "start:%s:%d", itemName, occurrence);
-    }
-    else
-    {
-        strcopy(processedKey, maxlen, itemIndexText);
-    }
+    strcopy(processedKey, maxlen, itemIndexText);
 
     if (g_processedItems.ContainsKey(processedKey))
     {
@@ -318,7 +297,6 @@ void Protocol_OnRouteConfigured(const char[] sessionFingerprint, int routeHash)
     g_hasItemRouteFingerprint = true;
 
     ItemReceipts_Configure(sessionFingerprint, routeHash);
-    g_startingItemOccurrences.Clear();
     Inventory_CheckRouteFingerprint(routeHash, sessionFingerprint);
 }
 
@@ -427,7 +405,6 @@ void Protocol_ResetSessionState()
 {
     g_processedItems.Clear();
     g_deliveredItemReceipts.Clear();
-    g_startingItemOccurrences.Clear();
     delete g_itemReceiptStore;
     g_itemReceiptFile[0] = '\0';
 

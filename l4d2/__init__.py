@@ -12,7 +12,7 @@ from .Locations import L4D2LocationData, get_location_names, survival_checks
 from .Options import SLOT_DATA_OPTIONS, L4D2Options, Randomization, l4d2_option_groups
 from .Regions import create_regions
 from .Routes import CAMPAIGNS, Chapter, Route, build_routes, route_slot_data, routes_from_slot_data, starting_chapters
-from .Rules import set_rules, validate_options
+from .Rules import set_rules
 
 
 logger = logging.getLogger("L4D2")
@@ -94,7 +94,6 @@ class L4D2World(World):
             self._roll_route()
         else:
             self._restore_route(tracker_slot_data)
-        validate_options(self)
 
         self.chapters = tuple(chapter for route in self.routes for chapter in route.chapters)
         self.starting_items = starting_chapters(self.routes, bool(self.options.all_campaigns_start.value))
@@ -186,7 +185,6 @@ class L4D2World(World):
         return {
             "route": route_slot_data(self.routes),
             "vanilla_campaign_order": list(CAMPAIGNS),
-            "starting_items": list(self.starting_items),
             "weapon_tiers": {
                 "enabled": bool(self.options.progressive_weapon_tiers.value),
                 "max_tier": max_weapon_tier,

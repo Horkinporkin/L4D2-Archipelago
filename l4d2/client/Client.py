@@ -96,7 +96,6 @@ class L4D2Context(CommonContext):
         self.bridge_synced = False
         self.bridge_syncing = False
 
-        self.room_seed_name: str | None = None
         self.ap_slot_data: dict[str, Any] = {}
         self.processed_item_count = 0
         self.pending_location_checks: set[str] = set()
@@ -120,14 +119,12 @@ class L4D2Context(CommonContext):
         await self.send_connect(game=self.game)
 
     def session_identity(self) -> str | None:
-        if self.room_seed_name and self.team is not None and self.slot is not None:
-            return f"{self.room_seed_name}|{self.team}|{self.slot}"
+        if self.server_seed_name and self.team is not None and self.slot is not None:
+            return f"{self.server_seed_name}|{self.team}|{self.slot}"
         return None
 
     def on_package(self, cmd: str, args: dict[str, Any]) -> None:
-        if cmd == "RoomInfo":
-            self.room_seed_name = args.get("seed_name")
-        elif cmd == "Connected":
+        if cmd == "Connected":
             self.ap_slot_data = args.get("slot_data") or {}
 
         super().on_package(cmd, args)
@@ -349,9 +346,6 @@ class L4D2Context(CommonContext):
                     "max_companions": int(survivors.get("max_companions", 0)),
                 },
             )
-
-            for item_name in self.ap_slot_data.get("starting_items", []):
-                await self.give_item(item_name, -1)
 
             completed_chapters, checked_pickups = self.checked_route_progress()
             await self.send_bridge(

@@ -66,10 +66,10 @@ StringMap g_meleeWeaponTypes;          // melee script names
 
 public Plugin myinfo =
 {
-    name = "L4D2 Archipelago Bridge",
-    author = "Archipelago",
+    name = "L4D2 Archipelago",
+    author = "Horkinporkin",
     description = "Bridges L4D2 game events to the external Archipelago client.",
-    version = "0.3.6",
+    version = "0.1.0",
     url = ""
 };
 

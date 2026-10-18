@@ -40,7 +40,7 @@ void Traps_Init()
     g_trapQueue = new ArrayList();
     g_trapReceiptKeys = new ArrayList(ByteCountToCells(AP_ITEM_KEY_LEN));
     g_trapFinaleStageNativeAvailable = GetFeatureStatus(FeatureType_Native,
-        "AP_GetCurrentFinaleStage") == FeatureStatus_Available;
+        "L4D2_GetCurrentFinaleStage") == FeatureStatus_Available;
 }
 
 void Traps_OnMapStart()
@@ -148,7 +148,7 @@ bool Traps_UsesClientSlot(int zombieClass)
 bool Traps_IsFinaleActive()
 {
     return g_trapFinaleStageNativeAvailable
-        && AP_GetCurrentFinaleStage() != FINALE_NONE;
+        && L4D2_GetCurrentFinaleStage() != FINALE_NONE;
 }
 
 bool Traps_IsFinaleMap()
@@ -209,9 +209,9 @@ bool Traps_TrySpawnNext()
     int infected;
     switch (zombieClass)
     {
-        case AP_TRAP_WITCH:    infected = AP_SpawnWitch(pos, ang);
-        case AP_TRAP_TANK:    infected = AP_SpawnTank(pos, ang);
-        default:            infected = AP_SpawnSpecial(zombieClass, pos, ang);
+        case AP_TRAP_WITCH:    infected = L4D2_SpawnWitch(pos, ang);
+        case AP_TRAP_TANK:    infected = L4D2_SpawnTank(pos, ang);
+        default:            infected = L4D2_SpawnSpecial(zombieClass, pos, ang);
     }
 
     if (!Traps_IsSpawnedEntity(infected))

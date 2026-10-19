@@ -14,11 +14,11 @@ def loadout(survivors: int = 0, weapon_tiers: int = 0) -> Rule:
     return (
         Has(PROGRESSIVE_SURVIVOR, 
             survivors, 
-            options=OptionFilter(ProgressiveSurvivors, ProgressiveSurvivors.option_true), 
+            options=[OptionFilter(ProgressiveSurvivors, ProgressiveSurvivors.option_true)], 
             filtered_resolution=True)
         & Has(PROGRESSIVE_WEAPON_TIER, 
               weapon_tiers, 
-              options=OptionFilter(ProgressiveWeaponTiers, ProgressiveWeaponTiers.option_true),
+              options=[OptionFilter(ProgressiveWeaponTiers, ProgressiveWeaponTiers.option_true)],
               filtered_resolution=True)
     )
 

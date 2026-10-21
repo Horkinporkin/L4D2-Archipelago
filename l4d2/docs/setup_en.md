@@ -1,7 +1,7 @@
 # Left 4 Dead 2 Archipelago Setup Guide
 ## Required software
 - Left 4 Dead 2 on Steam
-- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest) and the latest [L4D2 APWorld](https://github.com/Horkinporkin/L4D2-Archipelago/releases/latest) ([direct download](https://github.com/Horkinporkin/L4D2-Archipelago/releases/latest/download/l4d2.apworld))
+- [Archipelago](https://github.com/ArchipelagoMW/Archipelago/releases/latest) (0.6.8) and the latest [L4D2 APWorld](https://github.com/Horkinporkin/L4D2-Archipelago/releases/latest) ([direct download](https://github.com/Horkinporkin/L4D2-Archipelago/releases/latest/download/l4d2.apworld))
 - Latest release [l4d2-archipelago.zip](https://github.com/Horkinporkin/L4D2-Archipelago/releases/latest) ([direct download](https://github.com/Horkinporkin/L4D2-Archipelago/releases/latest/download/l4d2-archipelago.zip))
 - SourceMod and MetaMod:Source + required plugins
 

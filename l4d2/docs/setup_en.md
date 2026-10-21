@@ -13,7 +13,7 @@ Install the APWorld like any other. Either run the .apworld, use "Install APWorl
 The Archipelago plugin and custom assets are included in the .zip. Simply extract the zip into your Left 4 Dead 2 base directory (`steamapps\common\Left 4 Dead 2`)
 
 ### SourceMod & MetaMod:Source
-Both [SourceMod](https://www.sourcemod.net/downloads.php?branch=stable) and [MetaMod:Source](https://www.sourcemm.net/downloads.php?branch=stable) must be installed for the plugin to run. Simply download both and extract them into `<Left 4 Dead 2 directory>\left4dead2`
+Both [SourceMod](https://www.sourcemod.net/downloads.php?branch=stable) (**REQUIRES BUILD 7255 [HERE](https://github.com/alliedmodders/sourcemod/releases/download/1.12.0.7255/sourcemod-1.12.0-git7255-windows.zip), LATEST IS BROKEN**) and [MetaMod:Source](https://www.sourcemm.net/downloads.php?branch=stable) must be installed for the plugin to run. Simply download both and extract them into `<Left 4 Dead 2 directory>\left4dead2`
 
 #### Required plugins:
 These additional SourceMod plugins are required for the Archipelago plugin to run:
